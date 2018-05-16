@@ -26,7 +26,8 @@ public class Routes implements Parcelable {
 
     }
 
-
+    public Routes() {
+    }
 
     public int calculDistanceTotale ()
     {

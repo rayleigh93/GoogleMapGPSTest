@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     Button mButton;
 
     Button mButton2;
+    Button mButton3;
     TextView mTextView2;
 
     CreateMultipleItinary createMultipleItinary;
@@ -50,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         mButton = (Button) findViewById(R.id.button);
 
         mButton2 = findViewById(R.id.button2);
+        mButton3 = findViewById(R.id.button3);
+
         mTextView2 = findViewById(R.id.textView2);
 
 
@@ -75,14 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
 
                 List<LatLng> listWaypoint = new ArrayList<>();
-               // listWaypoint.add(new LatLng(48.833285,2.243502));
-               // listWaypoint.add(new LatLng(48.833148,2.239826));
+                listWaypoint.add(new LatLng(48.833285,2.243502));
+                listWaypoint.add(new LatLng(48.833148,2.239826));
 
 
                 try {
                      createMultipleItinary
-                            = new CreateMultipleItinary(new LatLng(48.862183,2.50035),
-                            new LatLng(48.858457,2.581044),
+                            = new CreateMultipleItinary(new LatLng(48.834145,2.249596),
+                            new LatLng(48.831421,2.244624),
                            listWaypoint,true );
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -92,10 +96,27 @@ public class MainActivity extends AppCompatActivity {
 
                 mTextView2.setText("OK GO !");
 
+
+
+
+
+
             }
         });
 
 
+        mButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(MainActivity.this,MapsActivity.class);
+                intent.putExtra("routes",createMultipleItinary);
+                startActivity(intent);
+
+
+
+            }
+        });
 
 
     }

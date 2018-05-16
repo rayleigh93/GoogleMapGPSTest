@@ -2,6 +2,8 @@ package com.example.stagiaire040.testdeuxgooglemap;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
+import com.example.stagiaire040.testdeuxgooglemap.classGps.CreateMultipleItinary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -40,6 +44,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationRequest mLocationRequest;
     static final int REQUEST_LOCATION_CODE = 99 ;
 
+    CreateMultipleItinary mCreateMultipleItinary;
 
 
     @Override
@@ -59,6 +64,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+
+
+        mCreateMultipleItinary = getIntent().getExtras().getParcelable("routes");
     }
 
 
@@ -75,11 +85,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-        List<LatLng> mListLatLng = decodePoly("qkfiHujgNv@Z|AaG|AuE|AwDDMZaBv@gEPe@~F{FRWjAaAjDcDAU@ODM\\_@RMJCN?TEnBeBnFcF|KmKb@_@^SLMa@qDa@{CCS~@u@FECM~@u@vAmAh@g@`AgAjA{AL@RFc@l@Ia@Yk@a@eBUaBm@gGOqB{@sQQuEi@yQKyEg@iIGq@eAoIi@cFM{AEc@Ea@AUIeJ?qCTeCRiANg@PeAd@wFNwCT{EDcB?sAGeCEu@EGI[a@sBa@oAa@_A_BwCc@wAYeBUoBQ}EAcDD{AHq@Q_LGqDDkGXgJLwAFwA^_EJaBFYLmCP}D?e@@gCB_DAcCCmA[sFCc@K[_AeEk@mBYw@Ks@Ey@Y_C]gCQ_AQq@e@_ACEEk@q@e@_@QwD{IYq@Q[_AcAcBaBkBgBVOvAm@sA}JLO@[IQCAfCcJvBqHTs@e@_AoFiLWw@Mq@o@aB");
+        List<LatLng> mListLatLng = decodePoly(mCreateMultipleItinary.getRoutesList().get(0).getPoints());
 
 
 
-        PolylineOptions options = new PolylineOptions().width(10).color(Color.RED).geodesic(true);
+        PolylineOptions options = new PolylineOptions().width(15).color(Color.BLUE).geodesic(true);
         for (int z = 0; z < mListLatLng.size(); z++) {
             LatLng point = mListLatLng.get(z);
             options.add(point);
@@ -147,8 +157,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
-      //  mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
+        float zoomLevel = 21.0f; //This goes up to 21
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
+
 
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -168,6 +179,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
+
+
 
 
     @Override

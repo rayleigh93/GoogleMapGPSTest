@@ -1,6 +1,7 @@
 package com.example.stagiaire040.testdeuxgooglemap.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.stagiaire040.testdeuxgooglemap.Itinary;
+import com.example.stagiaire040.testdeuxgooglemap.MainActivity;
 import com.example.stagiaire040.testdeuxgooglemap.R;
+import com.example.stagiaire040.testdeuxgooglemap.StepActivity;
 import com.example.stagiaire040.testdeuxgooglemap.classGps.Routes;
 
 import java.util.List;
@@ -50,7 +54,10 @@ public class RecyclerViewAdapterChoixRoutes extends RecyclerView.Adapter<Recycle
             @Override
             public void onClick(View v) {
 
-                
+                Intent intent = new Intent(mContext,StepActivity.class);
+                intent.putExtra("final",mRoutesList.get(position));
+                mContext.startActivity(intent);
+
 
 
             }
@@ -85,11 +92,6 @@ public class RecyclerViewAdapterChoixRoutes extends RecyclerView.Adapter<Recycle
             mTextViewNomIti = (TextView) itemView.findViewById(R.id.textViewNomItin);
             mTextViewDuree = (TextView) itemView.findViewById(R.id.textViewDuree);
             mTextViewDistance = (TextView) itemView.findViewById(R.id.textViewDistance);
-
-
-
-
-
 
         }
 
