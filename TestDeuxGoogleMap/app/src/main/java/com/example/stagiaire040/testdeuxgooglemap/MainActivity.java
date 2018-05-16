@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.stagiaire040.testdeuxgooglemap.classGps.CreateMultipleItinary;
 import com.example.stagiaire040.testdeuxgooglemap.classGps.Legs;
 import com.example.stagiaire040.testdeuxgooglemap.classGps.Routes;
 import com.example.stagiaire040.testdeuxgooglemap.classGps.Steps;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     Button mButton2;
     TextView mTextView2;
 
+    CreateMultipleItinary createMultipleItinary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +56,42 @@ public class MainActivity extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,MapsActivity.class));
+
+
+                Intent intent = new Intent(MainActivity.this,Itinary.class);
+                intent.putExtra("routes",createMultipleItinary);
+                startActivity(intent);
+
+               // startActivity(new Intent(MainActivity.this,MapsActivity.class));
             }
         });
+
+
+
 
         mButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String az = "https://maps.googleapis.com/maps/api/directions/json?origin=48.834145,2.249596&destination=48.831421,2.244624&waypoints=48.833285,2.243502|48.833148,2.239826&mode=walking&key=AIzaSyD_mWlvDrQCfkVpfcKYPSYRzbGenPkHRt8";
-               new JSONTASK().execute(az);
-             //   new JSONTASK().execute("https://maps.googleapis.com/maps/api/directions/json?origin=48.862183,2.50035&destination=48.862326,2.504643&mode=walking&key=AIzaSyD_mWlvDrQCfkVpfcKYPSYRzbGenPkHRt8");
+
+
+                List<LatLng> listWaypoint = new ArrayList<>();
+               // listWaypoint.add(new LatLng(48.833285,2.243502));
+               // listWaypoint.add(new LatLng(48.833148,2.239826));
+
+
+                try {
+                     createMultipleItinary
+                            = new CreateMultipleItinary(new LatLng(48.862183,2.50035),
+                            new LatLng(48.858457,2.581044),
+                           listWaypoint,true );
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                mTextView2.setText("OK GO !");
+
             }
         });
 
@@ -142,16 +172,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void parseJsonFile(String url) throws Exception{
 
-
-
-
-
         JSONObject jsonObject = new JSONObject(url);
 
         JSONArray routes = jsonObject.getJSONArray("routes");
 
-        List<Steps> stepsList = new ArrayList<>();
-        List<Legs> legsList = new ArrayList<>();
+        List<Steps> stepsList ;
+        List<Legs> legsList ;
         List<Routes> routesList = new ArrayList<>();
 
 
@@ -163,9 +189,6 @@ public class MainActivity extends AppCompatActivity {
             // INFO DE ROUTE[]
           JSONArray legs =  routes.getJSONObject(i).getJSONArray("legs");
 
-
-
-
           legsList= new ArrayList<>();
 
           for(int o = 0 ; o < legs.length() ; o++){
@@ -173,27 +196,20 @@ public class MainActivity extends AppCompatActivity {
               // INFO DE LEGS[]
             JSONArray steps = legs.getJSONObject(o).getJSONArray("steps");
 
-
               stepsList = new ArrayList<>();
 
               for(int p = 0 ; p < steps.length() ; p++)
               {
                   // INFO DE STEPS[]
                  stepsList.add(new Steps(steps.getJSONObject(p)));
-                // Log.v("ICI TEST ONE " , stepsList.get(p).getHtmlInstruction());
-              }
 
+              }
 
               //ICI
               legsList.add(new Legs(legs.getJSONObject(o),stepsList));
 
-
-
           }
-
           routesList.add(new Routes(routes.getJSONObject(i),legsList));
-
-
         }
 
 
@@ -201,14 +217,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-             Log.v("TAG ROUTES" , routesList.get(0).getLegsList().get(0).getStepsList().get(3).getHtmlInstruction());
-        Log.v("TAG ROUTES" , routesList.get(0).getLegsList().get(2).getStepsList().get(1).getHtmlInstruction());
-
-
-
-
-
-
+            Log.v("TAG ROUTES" , routesList.get(0).getLegsList().get(0).getStepsList().get(2).getHtmlInstruction());
+            Log.v("TAG ROUTES" , routesList.get(0).getLegsList().get(1).getStepsList().get(3).getHtmlInstruction());
 
 
         // mTextView2.setText(Html.fromHtml(mSteps.getHtmlInstruction()));

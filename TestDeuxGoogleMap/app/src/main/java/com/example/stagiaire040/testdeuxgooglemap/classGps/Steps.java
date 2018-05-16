@@ -1,11 +1,14 @@
 package com.example.stagiaire040.testdeuxgooglemap.classGps;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Steps {
+public class Steps implements Parcelable {
 
 
 
@@ -92,4 +95,38 @@ public class Steps {
     public void setHtmlInstruction(String htmlInstruction) {
         mHtmlInstruction = htmlInstruction;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.mDistance, flags);
+        dest.writeParcelable(this.mDuration, flags);
+        dest.writeParcelable(this.mStartLocation, flags);
+        dest.writeParcelable(this.mEndLocation, flags);
+        dest.writeString(this.mHtmlInstruction);
+    }
+
+    protected Steps(Parcel in) {
+        this.mDistance = in.readParcelable(Distance.class.getClassLoader());
+        this.mDuration = in.readParcelable(Duration.class.getClassLoader());
+        this.mStartLocation = in.readParcelable(Location.class.getClassLoader());
+        this.mEndLocation = in.readParcelable(Location.class.getClassLoader());
+        this.mHtmlInstruction = in.readString();
+    }
+
+    public static final Parcelable.Creator<Steps> CREATOR = new Parcelable.Creator<Steps>() {
+        @Override
+        public Steps createFromParcel(Parcel source) {
+            return new Steps(source);
+        }
+
+        @Override
+        public Steps[] newArray(int size) {
+            return new Steps[size];
+        }
+    };
 }
